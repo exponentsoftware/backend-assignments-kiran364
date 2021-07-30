@@ -2,6 +2,9 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const ToDo = require('../models/todoModel');
 
+
+// create new ToDo
+
 router.post('/', async (req, res) =>{
     try {
         const {name, todotitle, status, category} = req.body;
@@ -13,6 +16,8 @@ router.post('/', async (req, res) =>{
         console.log(err);
     }
 })
+
+// update ToDo
 
 router.patch('/', async (req, res) => {
     const {name, status, updatedDate } = req.body;
@@ -26,16 +31,18 @@ router.patch('/', async (req, res) => {
     }
 })
 
+//get all ToDo List
 
-router.get("/", async (req, res) => {
-    try {
-      const data = await ToDo.find();
-      res.status(200).json(data);
-    } catch (err) {
-      res.status(500).json(err);
-  }
-})
+// router.get("/", async (req, res) => {
+//     try {
+//       const data = await ToDo.find();
+//       res.status(200).json(data);
+//     } catch (err) {
+//       res.status(500).json(err);
+//   }
+// })
 
+//get by Id
 
 router.get("/:id", async (req, res) => {
     try {
@@ -46,6 +53,7 @@ router.get("/:id", async (req, res) => {
     }
   });
 
+//delete by Id
 
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
@@ -57,5 +65,30 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: "ToDo deleted successfully." });
   });
 
+// fetch by category
 
-module.exports = router;
+router.get("/", async (req, res) => {
+    const {category} = req.body;
+    try {
+      const data = await ToDo.find({category:category});
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json(err);
+  }
+})
+
+//search by title
+
+router.get("/", async (req, res) => {
+    const {todotitle} = req.body;
+    try {
+      const data = await ToDo.findOne({todotitle:todotitle});
+      console.log(data)
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json("message: title is not present in ToDo list");
+  }
+})
+
+  
+  module.exports = router;
